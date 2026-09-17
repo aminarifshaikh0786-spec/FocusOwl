@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17131d">
+<title>FocusOwl — Study Focus</title>
+<style>
+:root{
+  --bg:#f6f2eb;--surface:#fff;--surface2:#f0ece5;--ink:#211d28;--muted:#716c76;
+  --purple:#6c4df6;--purple2:#8b73ff;--dark:#17131d;--green:#35a66d;--red:#e95858;
+  --amber:#efb34f;--line:#e7e0d7;--shadow:0 18px 55px rgba(40,30,20,.10)
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--bg)}
+button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.app{min-height:100vh}.shell{width:min(1180px,100%);margin:auto;padding:22px}
+.topbar{height:58px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900;font-size:20px}.brand-mark{width:42px;height:42px;border-radius:14px;background:var(--dark);display:grid;place-items:center;font-size:24px;box-shadow:0 7px 20px #0002}
+.streak{background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:999px;font-size:13px;font-weight:800}
+.screen{animation:fade .22s ease}@keyframes fade{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}
+.grid{display:grid;grid-template-columns:1.08fr .92fr;gap:20px}.card{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:26px;box-shadow:var(--shadow)}
+.hero{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,#292230,#4b3d5b);color:#fff;border-radius:21px;padding:20px;margin-bottom:24px}.hero-owl{font-size:54px}.hero b{font-size:18px}.hero p{margin:5px 0 0;color:#d8d0e3;line-height:1.45}
+h1{font-size:44px;line-height:1.02;letter-spacing:-1.8px;margin:0 0 11px}h2{margin:0 0 8px;font-size:24px}h3{font-size:15px;margin:24px 0 10px}.muted,.sub{color:var(--muted);line-height:1.55}.sub{margin:0 0 23px}
+.form{display:grid;gap:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:13px}label{display:block;font-size:12px;font-weight:900;margin:0 0 7px;text-transform:uppercase;letter-spacing:.06em}
+input,select{width:100%;height:48px;border:1px solid var(--line);border-radius:14px;padding:0 14px;background:#fff;color:var(--ink);outline:0}input:focus,select:focus{border-color:var(--purple);box-shadow:0 0 0 3px #6c4df61a}
+.btn{border:0;border-radius:14px;min-height:48px;padding:0 17px;font-weight:900;transition:.15s}.btn:hover{transform:translateY(-1px)}.primary{background:var(--purple);color:#fff;box-shadow:0 8px 20px #6c4df633}.secondary{background:#eeeaff;color:#5439c7}.ghost{background:var(--surface2);color:var(--ink)}.danger{background:#fff0f0;color:#b63c3c}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.metric{background:#faf8f5;border-radius:17px;padding:16px}.metric strong{display:block;font-size:27px}.metric span{font-size:11px;color:var(--muted)}
+.session{max-width:860px;margin:auto}.session-card{text-align:center;padding:34px}.status{display:inline-flex;align-items:center;gap:6px;background:#eeeaff;color:#563dc8;border-radius:999px;padding:7px 12px;font-size:11px;font-weight:900;letter-spacing:.05em}
+.session-subject{font-size:20px;font-weight:900;margin-top:16px}.timer{font-size:88px;letter-spacing:-4px;font-weight:950;line-height:1;margin:19px 0 5px}.timer-note{color:var(--muted);font-size:13px}
+.progress{height:10px;background:#ece7e0;border-radius:999px;overflow:hidden;margin:23px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--purple2));transition:width .35s}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.actions .btn{min-width:150px}
+.warning{margin-top:22px;border:1px solid #f0d09a;background:#fff8e9;border-radius:20px;padding:20px;text-align:left;display:flex;gap:14px;align-items:flex-start}.warning-icon{font-size:29px}.warning strong{display:block;margin-bottom:5px}.warning p{margin:0;color:#765f3a;font-size:13px;line-height:1.5}.warning-actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}.warning-actions button{border:0;border-radius:10px;padding:9px 12px;font-weight:800}
+.side-list{display:grid;gap:10px;margin-top:14px}.info-row{display:flex;justify-content:space-between;align-items:center;padding:14px;background:#faf8f5;border-radius:15px;font-size:13px}.tag{padding:5px 8px;border-radius:8px;background:#eeeaff;color:#563dc8;font-weight:800;font-size:11px}
+.camera-wrap{position:relative;background:#17131d;border-radius:20px;overflow:hidden;aspect-ratio:16/10}.camera-wrap video{width:100%;height:100%;object-fit:cover;display:block}.camera-overlay{position:absolute;inset:16px;border:2px dashed #fff8;border-radius:16px;pointer-events:none}.camera-label{position:absolute;left:14px;top:14px;background:#17131dcc;color:#fff;padding:8px 10px;border-radius:9px;font-size:11px;font-weight:800}.camera-canvas{display:none}
+.scan-status{margin-top:13px;border-radius:16px;padding:15px;background:#f7f5ff}.scan-status b{display:block;margin-bottom:4px}.scan-status small{color:var(--muted);line-height:1.45}
+.detected{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.det{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px;font-size:12px;display:flex;justify-content:space-between}
+.result-card{text-align:center;max-width:760px;margin:auto}.result-owl{font-size:78px}.score{font-size:62px;font-weight:950;letter-spacing:-3px;color:var(--purple);margin:8px 0}.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.result-stat{padding:16px;background:#faf8f5;border-radius:16px}.result-stat b{display:block;font-size:24px}.result-stat span{font-size:11px;color:var(--muted)}
+.history{display:grid;gap:9px}.history-item{display:flex;justify-content:space-between;align-items:center;background:#faf8f5;border-radius:13px;padding:12px 13px;font-size:12px}.empty{font-size:12px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--dark);color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:800;box-shadow:var(--shadow);z-index:50}
+.modal{position:fixed;inset:0;background:#17131d99;display:grid;place-items:center;padding:20px;z-index:40}.modal-box{width:min(520px,100%);background:#fff;border-radius:24px;padding:25px;box-shadow:0 25px 80px #0003}
+.kbd{background:#eee9e2;padding:3px 7px;border-radius:6px;font-size:11px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.shell{padding:14px}h1{font-size:35px}.timer{font-size:65px}.session-card{padding:24px}.row{grid-template-columns:1fr}.metrics,.result-grid{grid-template-columns:1fr 1fr}.metric:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="app"><div class="shell">
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">🦉</span> FocusOwl</div>
+  <div class="streak" id="streak">🔥 0 day streak</div>
+</header>
+
+<!-- HOME -->
+<section id="home" class="screen">
+<div class="grid">
+  <div class="card">
+    <div class="hero"><div class="hero-owl">🦉</div><div><b>Focus session ready</b><p>Your owl will help you return to the task when distractions happen.</p></div></div>
+    <h1>Make distraction harder.</h1>
+    <p class="sub">Choose a goal and a study block. When you finish, you'll get a simple focus report.</p>
+    <div class="form">
+      <div><label>Study goal</label><input id="subject" placeholder="Organic Chemistry — Chapter 5"></div>
+      <div class="row">
+        <div><label>Duration</label><select id="duration"><option value="25">25 minutes</option><option value="50" selected>50 minutes</option><option value="90">90 minutes</option></select></div>
+        <div><label>Break</label><select id="break"><option value="5">5 minutes</option><option value="10" selected>10 minutes</option><option value="15">15 minutes</option></select></div>
+      </div>
+      <button class="btn primary" id="start">Start study session →</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Today</h2>
+    <p class="muted">Your activity stays on this device in this MVP.</p>
+    <div class="metrics">
+      <div class="metric"><strong id="todayMin">0</strong><span>focused minutes</span></div>
+      <div class="metric"><strong id="todaySessions">0</strong><span>sessions</span></div>
+      <div class="metric"><strong id="todayDist">0</strong><span>distractions</span></div>
+    </div>
+    <h3>Recent sessions</h3><div id="history" class="history"></div>
+  </div>
+</div>
+</section>
+
+<!-- STUDY -->
+<section id="study" class="screen hidden">
+<div class="session">
+  <div class="grid">
+    <div class="card session-card">
+      <div class="status">● FOCUS MODE ACTIVE</div>
+      <div class="session-subject" id="studySubject"></div>
+      <div class="timer" id="timer">50:00</div>
+      <div class="timer-note">One block. One goal. Keep going.</div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="actions">
+        <button class="btn secondary" id="distract">I got distracted</button>
+        <button class="btn ghost" id="desk">Verify my desk</button>
+        <button class="btn danger" id="end">End session</button>
+      </div>
+      <div id="warning" class="warning hidden">
+        <div class="warning-icon">🦉</div><div>
+          <strong>Hold on, student!</strong>
+          <p>You're stepping away from your scheduled study block. Take a breath and choose what you want to do.</p>
+          <div class="warning-actions">
+            <button class="secondary" id="returnWork">← Back to work</button>
+            <button class="ghost" id="verifyWarning">Verify my desk</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Focus companion</h2>
+      <p class="muted">The owl tracks session events, not your private content.</p>
+      <div class="side-list">
+        <div class="info-row"><span>Goal</span><span class="tag" id="goal"></span></div>
+        <div class="info-row"><span>Distractions</span><b id="distCount">0</b></div>
+        <div class="info-row"><span>Break planned</span><b id="breakText">10 min</b></div>
+      </div>
+      <h3>Keyboard</h3><p class="muted"><span class="kbd">D</span> distraction &nbsp; <span class="kbd">V</span> verify desk &nbsp; <span class="kbd">Esc</span> return</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- DESK VERIFICATION -->
+<section id="deskScreen" class="screen hidden">
+<div class="grid">
+  <div class="card">
+    <h2>AI desk verification</h2>
+    <p class="sub">Show your study area. The optional browser model looks for common study-related objects such as a book, laptop or person.</p>
+    <div class="camera-wrap">
+      <video id="video" autoplay muted playsinline></video>
+      <div class="camera-overlay"></div><div class="camera-label" id="cameraLabel">CAMERA OFF</div>
+      <canvas id="canvas" class="camera-canvas"></canvas>
+    </div>
+    <div class="actions" style="margin-top:14px">
+      <button class="btn primary" id="enableCamera">Enable camera</button>
+      <button class="btn secondary" id="scanDesk" disabled>Scan desk</button>
+      <button class="btn ghost" id="backStudy">Back to study</button>
+    </div>
+    <div id="scanStatus" class="scan-status"><b>Waiting for camera</b><small>Camera frames remain in your browser in this MVP. No image is uploaded by this page.</small></div>
+  </div>
+  <div class="card">
+    <h2>What gets checked?</h2>
+    <div class="side-list">
+      <div class="info-row"><span>📖 Book</span><span class="tag">Study item</span></div>
+      <div class="info-row"><span>💻 Laptop</span><span class="tag">Study item</span></div>
+      <div class="info-row"><span>🧑 Person</span><span class="tag">Present</span></div>
+      <div class="info-row"><span>📱 Phone</span><span class="tag">Distraction</span></div>
+    </div>
+    <p class="muted" style="margin-top:18px">If the optional AI model cannot load, the app still gives you a camera-based verification flow rather than blocking your session.</p>
+  </div>
+</div>
+</section>
+
+<!-- RESULT -->
+<section id="resultScreen" class="screen hidden">
+<div class="card result-card">
+  <div class="result-owl">🦉</div>
+  <div class="status">SESSION COMPLETE</div>
+  <h1 style="font-size:36px;margin-top:15px">Sufficiently academic.</h1>
+  <p class="sub">Nice work. Here's your session report.</p>
+  <div class="score" id="score">100%</div>
+  <div class="result-grid">
+    <div class="result-stat"><b id="finalMinutes">0</b><span>focused minutes</span></div>
+    <div class="result-stat"><b id="finalDist">0</b><span>distractions</span></div>
+    <div class="result-stat"><b id="finalGoal">—</b><span>goal</span></div>
+  </div>
+  <div class="actions">
+    <button class="btn primary" id="newSession">Start another session</button>
+    <button class="btn ghost" id="dashboard">Back to dashboard</button>
+  </div>
+</div>
+</section>
+</div></div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+/* FocusOwl MVP
+   - Pure HTML/CSS/JS
+   - Camera verification
+   - Optional COCO-SSD browser AI detection via CDN
+   - Local session history
+   - No backend required
+*/
+const $ = id => document.getElementById(id);
+const screens = ["home","study","deskScreen","resultScreen"];
+let S = {
+  subject:"", total:0, remaining:0, distractions:0, break:"10",
+  startedAt:0, interval:null, stream:null, model:null, modelLoading:false
+};
+const STORAGE = "focusowl.sessions.v1";
+
+function getSessions(){try{return JSON.parse(localStorage.getItem(STORAGE)||"[]")}catch{return[]}}
+function setSessions(v){localStorage.setItem(STORAGE,JSON.stringify(v))}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function show(screen){screens.forEach(id=>$(id).classList.toggle("hidden",id!==screen))}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.add("hidden"),2200)}
+function formatTime(s){return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+function todaySessions(){let d=new Date().toDateString();return getSessions().filter(x=>new Date(x.date).toDateString()===d)}
+function renderDashboard(){
+  const all=getSessions(), today=todaySessions();
+  $("todayMin").textContent=today.reduce((a,x)=>a+x.minutes,0);
+  $("todaySessions").textContent=today.length;
+  $("todayDist").textContent=today.reduce((a,x)=>a+x.distractions,0);
+  $("history").innerHTML=all.slice(-6).reverse().map(x=>`<div class="history-item"><span>${escapeHTML(x.subject)}</span><b>${x.minutes}m · ${x.score}%</b></div>`).join("") || '<div class="empty">No completed sessions yet.</div>';
+  $("streak").textContent=`🔥 ${today.length?1:0} day streak`;
+}
+function startSession(){
+  S.subject=$("subject").value.trim()||"Focused study";
+  S.total=Number($("duration").value)*60;S.remaining=S.total;S.distractions=0;S.break=$("break").value;S.startedAt=Date.now();
+  $("studySubject").textContent=S.subject;$("goal").textContent=S.subject;$("breakText").textContent=S.break+" min";$("distCount").textContent="0";$("warning").classList.add("hidden");
+  show("study");updateTimer();clearInterval(S.interval);S.interval=setInterval(()=>{S.remaining--;updateTimer();if(S.remaining<=0)completeSession(true)},1000);
+}
+function updateTimer(){
+  $("timer").textContent=formatTime(Math.max(0,S.remaining));
+  $("bar").style.width=Math.min(100,((S.total-S.remaining)/S.total)*100)+"%";
+}
+function addDistraction(){
+  S.distractions++;$("distCount").textContent=S.distractions;$("warning").classList.remove("hidden");toast("Distraction logged — come back to your goal.");
+}
+function completeSession(completed){
+  clearInterval(S.interval);S.interval=null;stopCamera();
+  const elapsed=Math.max(0,Math.floor((S.total-S.remaining)/60));
+  const minutes=completed?Math.round(S.total/60):elapsed;
+  const score=Math.max(0,100-S.distractions*8);
+  const entry={subject:S.subject,minutes,distractions:S.distractions,score,date:new Date().toISOString()};
+  setSessions([...getSessions(),entry]);
+  $("finalMinutes").textContent=minutes;$("finalDist").textContent=S.distractions;$("finalGoal").textContent=S.subject;
+  $("score").textContent=score+"%";renderDashboard();show("result");
+}
+async function enableCamera(){
+  if(!navigator.mediaDevices?.getUserMedia){toast("Camera is not supported in this browser.");return}
+  try{
+    stopCamera();
+    S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1280},height:{ideal:720}},audio:false});
+    $("video").srcObject=S.stream;$("cameraLabel").textContent="CAMERA LIVE";$("scanDesk").disabled=false;
+    $("scanStatus").innerHTML="<b>Camera ready</b><small>Position your book/notebook and study area inside the frame, then tap Scan desk.</small>";
+    loadModel();
+  }catch(e){
+    $("scanStatus").innerHTML="<b>Camera permission needed</b><small>Please allow camera access, or continue without desk verification.</small>";
+  }
+}
+function stopCamera(){if(S.stream){S.stream.getTracks().forEach(t=>t.stop());S.stream=null}$("video").srcObject=null}
+async function loadModel(){
+  if(S.model||S.modelLoading)return;S.modelLoading=true;
+  try{
+    if(!window.cocoSsd){
+      await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js");
+      await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd");
+    }
+    S.model=await cocoSsd.load();
+    $("scanStatus").innerHTML="<b>AI model ready</b><small>Tap Scan desk for an on-device object check.</small>";
+  }catch(e){
+    $("scanStatus").innerHTML="<b>AI model unavailable</b><small>The camera flow still works. A production build can bundle the model locally to avoid CDN dependency.</small>";
+  }finally{S.modelLoading=false}
+}
+function loadScript(src){return new Promise((resolve,reject)=>{let s=document.createElement("script");s.src=src;s.onload=resolve;s.onerror=reject;document.head.appendChild(s)})}
+async function scanDesk(){
+  if(!$("video").videoWidth){toast("Wait for the camera feed.");return}
+  const canvas=$("canvas"),v=$("video");canvas.width=v.videoWidth;canvas.height=v.videoHeight;canvas.getContext("2d").drawImage(v,0,0);
+  $("scanStatus").innerHTML="<b>Scanning…</b><small>Analyzing the current camera frame.</small>";
+  let detections=[];
+  if(S.model){try{detections=await S.model.detect(v)}catch{}}
+  const wanted=["book","laptop","person","cell phone"];
+  const found=detections.filter(x=>wanted.includes(x.class)&&x.score>.42);
+  const hasStudy=found.some(x=>["book","laptop"].includes(x.class));
+  const hasPhone=found.some(x=>x.class==="cell phone");
+  const confidence=hasStudy?Math.round(Math.max(...found.filter(x=>["book","laptop"].includes(x.class)).map(x=>x.score))*100):0;
+  if(S.model){
+    $("scanStatus").innerHTML=`<b>${hasStudy?"✓ Study setup detected":"⚠ No clear study material detected"}</b><small>${hasStudy?"Your frame contains a book or laptop.":"Try moving your study material into the frame and scan again."}</small><div class="detected">${found.map(x=>`<div class="det"><span>${escapeHTML(x.class)}</span><b>${Math.round(x.score*100)}%</b></div>`).join("")||'<div class="det"><span>No supported objects</span><b>—</b></div>'}</div>`;
+    if(hasStudy)toast(`Desk verified at about ${confidence}% confidence${hasPhone?" · phone also visible":""}.`);
+  }else{
+    $("scanStatus").innerHTML="<b>✓ Camera verification captured</b><small>The AI model is unavailable, so this MVP cannot make an object-level judgment. No image was uploaded.</small>";
+  }
+}
+$("start").onclick=startSession;
+$("distract").onclick=addDistraction;
+$("returnWork").onclick=()=>$("warning").classList.add("hidden");
+$("verifyWarning").onclick=()=>{show("deskScreen");stopCamera();enableCamera()};
+$("desk").onclick=()=>{show("deskScreen");enableCamera()};
+$("end").onclick=()=>completeSession(false);
+$("enableCamera").onclick=enableCamera;
+$("scanDesk").onclick=scanDesk;
+$("backStudy").onclick=()=>{stopCamera();show("study")};
+$("newSession").onclick=()=>{show("home");$("subject").focus()};
+$("dashboard").onclick=()=>show("home");
+
+document.addEventListener("keydown",e=>{
+  if(e.target.matches("input,select,textarea"))return;
+  if(e.key.toLowerCase()==="d" && S.interval) addDistraction();
+  if(e.key.toLowerCase()==="v" && !$("study").classList.contains("hidden")){$("desk").click()}
+  if(e.key==="Escape" && !S.interval)show("home");
+});
+window.addEventListener("beforeunload",stopCamera);
+renderDashboard();
+</script>
+</body>
+</html>
