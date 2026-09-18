@@ -189,7 +189,13 @@ let S = {
 const STORAGE = "focusowl.sessions.v1";
 
 function getSessions(){try{return JSON.parse(localStorage.getItem(STORAGE)||"[]")}catch{return[]}}
-function setSessions(v){localStorage.setItem(STORAGE,JSON.stringify(v))}
+function setSessions(v){
+  try{
+    localStorage.setItem(STORAGE,JSON.stringify(v));
+  }catch(e){
+    console.warn("Session history could not be saved:",e);
+  }
+}
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function show(screen){screens.forEach(id=>$(id).classList.toggle("hidden",id!==screen))}
 function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.add("hidden"),2200)}
@@ -217,14 +223,37 @@ function addDistraction(){
   S.distractions++;$("distCount").textContent=S.distractions;$("warning").classList.remove("hidden");toast("Distraction logged — come back to your goal.");
 }
 function completeSession(completed){
-  clearInterval(S.interval);S.interval=null;stopCamera();
+  if(!S.subject)S.subject="Focused study";
+
+  clearInterval(S.interval);
+  S.interval=null;
+  stopCamera();
+
   const elapsed=Math.max(0,Math.floor((S.total-S.remaining)/60));
   const minutes=completed?Math.round(S.total/60):elapsed;
   const score=Math.max(0,100-S.distractions*8);
-  const entry={subject:S.subject,minutes,distractions:S.distractions,score,date:new Date().toISOString()};
-  setSessions([...getSessions(),entry]);
-  $("finalMinutes").textContent=minutes;$("finalDist").textContent=S.distractions;$("finalGoal").textContent=S.subject;
-  $("score").textContent=score+"%";renderDashboard();show("result");
+
+  const entry={
+    subject:S.subject,
+    minutes:minutes,
+    distractions:S.distractions,
+    score:score,
+    date:new Date().toISOString()
+  };
+
+  try{
+    setSessions([...getSessions(),entry]);
+  }catch(e){
+    console.warn("Could not save session:",e);
+  }
+
+  $("finalMinutes").textContent=minutes;
+  $("finalDist").textContent=S.distractions;
+  $("finalGoal").textContent=S.subject;
+  $("score").textContent=score+"%";
+
+  renderDashboard();
+  show("result");
 }
 async function enableCamera(){
   if(!navigator.mediaDevices?.getUserMedia){toast("Camera is not supported in this browser.");return}
