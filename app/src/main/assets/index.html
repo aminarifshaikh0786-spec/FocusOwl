@@ -253,7 +253,7 @@ function completeSession(completed){
   $("score").textContent=score+"%";
 
   renderDashboard();
-  show("result");
+  show("resultScreen");
 }
 async function enableCamera(){
   if(!navigator.mediaDevices?.getUserMedia){toast("Camera is not supported in this browser.");return}
