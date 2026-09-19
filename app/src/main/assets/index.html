@@ -212,6 +212,9 @@ function renderDashboard(){
 function startSession(){
   S.subject=$("subject").value.trim()||"Focused study";
   S.total=Number($("duration").value)*60;S.remaining=S.total;S.distractions=0;S.break=$("break").value;S.startedAt=Date.now();
+
+  if(window.FocusOwl?.startBlocking) window.FocusOwl.startBlocking();
+  
   $("studySubject").textContent=S.subject;$("goal").textContent=S.subject;$("breakText").textContent=S.break+" min";$("distCount").textContent="0";$("warning").classList.add("hidden");
   show("study");updateTimer();clearInterval(S.interval);S.interval=setInterval(()=>{S.remaining--;updateTimer();if(S.remaining<=0)completeSession(true)},1000);
 }
@@ -251,6 +254,8 @@ function completeSession(completed){
   $("finalDist").textContent=S.distractions;
   $("finalGoal").textContent=S.subject;
   $("score").textContent=score+"%";
+
+  if(window.FocusOwl?.stopBlocking) window.FocusOwl.stopBlocking();
 
   renderDashboard();
   show("resultScreen");
