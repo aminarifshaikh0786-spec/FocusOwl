@@ -115,8 +115,7 @@ fun isAccessibilityEnabled(): Boolean {
         ) ?: return false
 
     val component =
-        ComponentName(this, AppBlockerService::class.java).flattenToString()
-
+       ComponentName(this@MainActivity, AppBlockerService::class.java).flattenToString()
     return enabledServices.split(":").any {
         it.equals(component, ignoreCase = true)
     }
