@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.Intent
+import android.content.ComponentName
 import android.provider.Settings
 import android.os.Bundle
 import android.webkit.PermissionRequest
