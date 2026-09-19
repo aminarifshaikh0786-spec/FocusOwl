@@ -244,14 +244,16 @@ function startSession(){
 
   clearInterval(S.interval);
 
-  S.interval=setInterval(()=>{
-    S.remaining--;
-    updateTimer();
+S.interval=setInterval(()=>{
+  const elapsedSeconds=Math.floor((Date.now()-S.startedAt)/1000);
+  S.remaining=Math.max(0,S.total-elapsedSeconds);
 
-    if(S.remaining<=0){
-      completeSession();
-    }
-  },1000);
+  updateTimer();
+
+  if(S.remaining<=0){
+    completeSession(true);
+  }
+},250);
 }
 function updateTimer(){
   $("timer").textContent=formatTime(Math.max(0,S.remaining));
