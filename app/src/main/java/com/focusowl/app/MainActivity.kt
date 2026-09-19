@@ -3,11 +3,14 @@ package com.focusowl.app
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.Intent
+import android.provider.Settings
 import android.os.Bundle
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.JavascriptInterface
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -79,6 +82,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        webView.addJavascriptInterface(object {
+
+    @JavascriptInterface
+    fun startBlocking() {
+        getSharedPreferences("FocusOwl", MODE_PRIVATE)
+            .edit()
+            .putBoolean("focus_active", true)
+            .apply()
+    }
+
+    @JavascriptInterface
+    fun stopBlocking() {
+        getSharedPreferences("FocusOwl", MODE_PRIVATE)
+            .edit()
+            .putBoolean("focus_active", false)
+            .apply()
+    }
+
+    @JavascriptInterface
+    fun openAccessibilitySettings() {
+        startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+    }
+
+}, "FocusOwl")
 
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html")
     }
