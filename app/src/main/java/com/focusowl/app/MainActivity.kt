@@ -105,6 +105,21 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
     }
 
+    @JavascriptInterface
+fun isAccessibilityEnabled(): Boolean {
+    val enabledServices =
+        Settings.Secure.getString(
+            contentResolver,
+            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+        ) ?: return false
+
+    val component =
+        ComponentName(this, AppBlockerService::class.java).flattenToString()
+
+    return enabledServices.split(":").any {
+        it.equals(component, ignoreCase = true)
+    }
+}
 }, "FocusOwl")
 
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html")
